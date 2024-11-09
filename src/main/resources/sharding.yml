@@ -1,0 +1,72 @@
+dataSources:
+  shard1:
+    driverClassName: org.postgresql.Driver
+    jdbcUrl: jdbc:postgresql://localhost:5432/transactionshard1
+    username: postgres
+    password: 4
+  shard2:
+    driverClassName: org.postgresql.Driver
+    jdbcUrl: jdbc:postgresql://localhost:5432/transactionshard2
+    username: postgres
+    password: 4
+
+rules:
+  - !SHARDING
+    tables:
+      wallet_types:
+        actualDataNodes: shard${1..2}.wallet_types
+        broadcastTables: wallet_types
+
+      wallets:
+        actualDataNodes: shard${1..2}.wallets
+        databaseStrategy:
+          standard:
+            shardingColumn: user_uid
+            shardingAlgorithmName: user_inline
+
+      payment_requests:
+        actualDataNodes: shard${1..2}.payment_requests
+        databaseStrategy:
+          standard:
+            shardingColumn: user_uid
+            shardingAlgorithmName: user_inline
+
+      transactions:
+        actualDataNodes: shard${1..2}.transactions
+        databaseStrategy:
+          standard:
+            shardingColumn: user_uid
+            shardingAlgorithmName: user_inline
+
+      top_up_requests:
+        actualDataNodes: shard${1..2}.top_up_requests
+        databaseStrategy:
+          standard:
+            shardingColumn: payment_request_uid
+            shardingAlgorithmName: request_inline
+
+      withdrawal_requests:
+        actualDataNodes: shard${1..2}.withdrawal_requests
+        databaseStrategy:
+          standard:
+            shardingColumn: payment_request_uid
+            shardingAlgorithmName: request_inline
+
+      transfer_requests:
+        actualDataNodes: shard${1..2}.transfer_requests
+        databaseStrategy:
+          standard:
+            shardingColumn: payment_request_uid_from
+            shardingAlgorithmName: request_inline
+
+    shardingAlgorithms:
+      user_inline:
+        type: INLINE
+        props:
+          algorithm-expression: shard${abs(hash(user_uid)) % 2 + 1}
+      request_inline:
+        type: INLINE
+        props:
+          algorithm-expression: shard${abs(hash(payment_request_uid)) % 2 + 1}
+props:
+  sql-show: true

@@ -1,0 +1,24 @@
+server:
+  port: 8086
+
+spring:
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:sharding.yml
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/transactionshard1
+    locations: classpath:db/migration
+    user: postgres
+    password: 4
+
+  flyway-shard2:
+    url: jdbc:postgresql://localhost:5432/transactionshard2
+    locations: classpath:db/migration
+    user: postgres
+    password: 4
