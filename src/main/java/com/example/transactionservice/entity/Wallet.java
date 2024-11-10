@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "wallets")
 @Data
-public class Wallets {
+public class Wallet {
 
     @Id
     @GeneratedValue
@@ -33,7 +33,7 @@ public class Wallets {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_type_uid")
-    private WalletTypes walletType;
+    private WalletType walletType;
 
     @NotNull
     @Column(name = "user_uid")

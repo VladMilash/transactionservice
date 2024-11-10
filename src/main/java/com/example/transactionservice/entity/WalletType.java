@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "wallet_types")
 @Data
-public class WalletTypes {
+public class WalletType {
 
     @Id
     @GeneratedValue
