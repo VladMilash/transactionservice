@@ -12,13 +12,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
-    url: jdbc:postgresql://localhost:5432/transactionshard1
-    locations: classpath:db/migration
-    user: postgres
-    password: 4
+    enabled: false
 
-  flyway-shard2:
+  datasource-shard1:
+      url: jdbc:postgresql://localhost:5432/transactionshard1
+      username: postgres
+      password: 4
+
+  datasource-shard2:
     url: jdbc:postgresql://localhost:5432/transactionshard2
-    locations: classpath:db/migration
-    user: postgres
+    username: postgres
     password: 4

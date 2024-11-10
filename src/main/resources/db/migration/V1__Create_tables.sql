@@ -24,7 +24,7 @@ create table wallets
     user_uid        uuid                    not null,
     status          varchar(30)             not null,
     balance         decimal   default 0.0   not null,
-    archived_at     timestamp,
+    archived_at     timestamp
 );
 
 create table payment_requests
@@ -33,7 +33,7 @@ create table payment_requests
     created_at        timestamp default now()              not null,
     modified_at       timestamp,
     user_uid          uuid                                 not null,
-    wallet_uid        uuid                                 not null references wallets (wallet_uid),
+    wallet_uid        uuid                                 not null references wallets (uid),
     amount            decimal   default 0.0                not null,
     status            varchar,
     comment           varchar(256),
@@ -74,6 +74,7 @@ create table transfer_requests
     payment_request_uid_from uuid                                 not null references payment_requests on delete cascade,
     payment_request_uid_to   uuid                                 not null references payment_requests on delete cascade
 );
+
 
 
 
