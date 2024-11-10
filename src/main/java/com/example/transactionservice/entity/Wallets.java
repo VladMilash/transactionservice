@@ -1,19 +1,19 @@
 package com.example.transactionservice.entity;
 
-import com.example.transactionservice.entity.enums.UserType;
-import com.example.transactionservice.entity.enums.WalletTypesStatus;
+import com.example.transactionservice.entity.enums.WalletStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "wallet_types")
+@Table(name = "wallets")
 @Data
-public class WalletTypes {
+public class Wallets {
 
     @Id
     @GeneratedValue
@@ -31,27 +31,24 @@ public class WalletTypes {
     @Column(name = "name", length = 32)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_type_uid")
+    private WalletTypes walletType;
+
     @NotNull
-    @Column(name = "currency_code", length = 3)
-    private String currencyCode;
+    @Column(name = "user_uid")
+    private UUID userUid;
 
     @NotNull
     @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private WalletTypesStatus status;
+    private WalletStatus status;
+
+    @NotNull
+    @Column(name = "balance")
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(name = "archived_at")
     private LocalDateTime archivedAt;
-
-    @Column(name = "user_type")
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @Column(name = "creator")
-    private String creator;
-
-    @Column(name = "modifier")
-    private String modifier;
 
 
 }
