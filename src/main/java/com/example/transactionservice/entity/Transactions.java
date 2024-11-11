@@ -1,20 +1,20 @@
 package com.example.transactionservice.entity;
 
 import com.example.transactionservice.entity.enums.State;
+import com.example.transactionservice.entity.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "payment_requests")
+@Table(name = "transactions")
 @Data
-public class PaymentRequest {
+public class Transactions {
     @Id
     @GeneratedValue
     @Column(name = "uid")
@@ -36,15 +36,24 @@ public class PaymentRequest {
     private Wallet wallet;
 
     @NotNull
+    @Column(name = "wallet_name", length = 32)
+    private String walletName;
+
+    @NotNull
     @Column(name = "amount")
     private BigDecimal amount = BigDecimal.ZERO;
 
-    @Column(name = "status")
-    private State status;
+    @NotNull
+    @Column(name = "type")
+    private TransactionType type;
 
-    @Column(name = "comment")
-    private String comment;
+    @NotNull
+    @Column(name = "state")
+    private State state;
 
-    @Column(name = "payment_method_id")
-    private BigInteger paymentMethodId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_request_uid")
+    private PaymentRequest paymentRequest;
+
+
 }
