@@ -19,7 +19,7 @@ public class TopUpRequest {
     private UUID uid;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "UUID")
     private LocalDateTime createdAt;
 
     @NotNull

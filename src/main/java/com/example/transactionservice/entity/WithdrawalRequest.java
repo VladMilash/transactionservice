@@ -1,7 +1,6 @@
 package com.example.transactionservice.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -15,7 +14,7 @@ public class WithdrawalRequest {
 
     @Id
     @GeneratedValue
-    @Column(name = "uid")
+    @Column(name = "uid", columnDefinition = "UUID")
     private UUID uid;
 
     @CreationTimestamp

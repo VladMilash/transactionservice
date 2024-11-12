@@ -13,11 +13,12 @@ spring:
 
   flyway:
     enabled: false
+    locations: classpath:db/migration
 
   datasource-shard1:
-      url: jdbc:postgresql://localhost:5432/transactionshard1
-      username: postgres
-      password: 4
+    url: jdbc:postgresql://localhost:5432/transactionshard1
+    username: postgres
+    password: 4
 
   datasource-shard2:
     url: jdbc:postgresql://localhost:5432/transactionshard2

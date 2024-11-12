@@ -1,7 +1,6 @@
 package com.example.transactionservice.config;
 
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
@@ -13,25 +12,28 @@ import javax.sql.DataSource;
 @Configuration
 public class FlywayConfig {
 
-    @Bean
-    public Flyway flywayShard1(@Qualifier("datasource-shard1") DataSource dataSource) {
-        return Flyway.configure()
-                .dataSource(dataSource)
+    private final Flyway flywayShard1;
+    private final Flyway flywayShard2;
+
+    public FlywayConfig(@Qualifier("datasource-shard1") DataSource dataSource1,
+                        @Qualifier("datasource-shard2") DataSource dataSource2) {
+        this.flywayShard1 = Flyway.configure()
+                .dataSource(dataSource1)
                 .locations("classpath:db/migration")
                 .load();
-    }
-
-    @Bean
-    public Flyway flywayShard2(@Qualifier("datasource-shard2") DataSource dataSource) {
-        return Flyway.configure()
-                .dataSource(dataSource)
+        this.flywayShard2 = Flyway.configure()
+                .dataSource(dataSource2)
                 .locations("classpath:db/migration")
                 .load();
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void migrateDatabases(@Autowired Flyway flywayShard1, @Autowired Flyway flywayShard2) {
+    public void migrateDatabasesShard1() {
         flywayShard1.migrate();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void migrateDatabasesShard2() {
         flywayShard2.migrate();
     }
 }

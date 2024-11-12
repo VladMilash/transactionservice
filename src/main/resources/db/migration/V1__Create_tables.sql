@@ -77,4 +77,3 @@ create table transfer_requests
 
 
 
-

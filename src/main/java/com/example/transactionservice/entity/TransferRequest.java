@@ -16,7 +16,7 @@ public class TransferRequest {
 
     @Id
     @GeneratedValue
-    @Column(name = "uid")
+    @Column(name = "uid", columnDefinition = "UUID")
     private UUID uid;
 
     @CreationTimestamp
