@@ -47,16 +47,12 @@ public class DataSourceConfig {
             @Qualifier("datasource-shard1") DataSource shard1,
             @Qualifier("datasource-shard2") DataSource shard2
     ) throws SQLException {
-        // Создаем карту источников данных
         Map<String, DataSource> dataSourceMap = new HashMap<>();
         dataSourceMap.put("shard1", shard1);
         dataSourceMap.put("shard2", shard2);
-
-        // Настройки ShardingSphere
         Properties props = new Properties();
         props.setProperty("sql-show", "true");
 
-        // Создаем ShardingSphereDataSource
         return ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, Collections.emptyList(), props);
     }
 }
