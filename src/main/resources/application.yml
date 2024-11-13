@@ -1,4 +1,4 @@
-server:
+Server:
   port: 8086
 
 spring:

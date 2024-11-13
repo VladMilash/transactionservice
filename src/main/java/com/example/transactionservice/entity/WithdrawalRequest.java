@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "withdrawal_requests")
 @Data
-public class WithdrawalRequest {
+public class WithdrawalRequest{
 
     @Id
     @GeneratedValue

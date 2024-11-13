@@ -12,12 +12,12 @@ import javax.sql.DataSource;
 public class JpaConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("datasource-shard1") DataSource dataSourceShard1,
-            @Qualifier("datasource-shard2") DataSource dataSourceShard2) {
+            @Qualifier("shardingDataSource") DataSource shardingDataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSourceShard1);
+        em.setDataSource(shardingDataSource);
         em.setPackagesToScan("com.example.transactionservice.entity");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         return em;
     }
+
 }
