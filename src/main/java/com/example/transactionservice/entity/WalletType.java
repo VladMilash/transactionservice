@@ -4,16 +4,20 @@ import com.example.transactionservice.entity.enums.UserType;
 import com.example.transactionservice.entity.enums.WalletTypesStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "wallet_types")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WalletType {
 
     @Id
