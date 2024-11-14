@@ -4,13 +4,14 @@ import com.example.transactionservice.dto.CreateWalletRequestDTO;
 import com.example.transactionservice.entity.Wallet;
 import com.example.transactionservice.entity.WalletType;
 import com.example.transactionservice.entity.enums.WalletStatus;
-import com.example.transactionservice.entity.enums.WalletTypesStatus;
 import com.example.transactionservice.repository.WalletRepository;
 import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.service.WalletTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -26,7 +27,23 @@ public class WalletServiceImpl implements WalletService {
         return walletRepository.save(wallet);
     }
 
-    private static Wallet createWalletEntity(CreateWalletRequestDTO createWalletRequestDTO, WalletType walletType) {
+    @Override
+    public Wallet getById(UUID id) {
+        return walletRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("WalletType with id " + id + " not found"));
+    }
+
+    @Override
+    public Wallet update(Wallet wallet) {
+        return null;
+//                TODO:implements logic
+//        Wallet forUpdate = getById(wallet.getUid());
+//        Wallet foundedWallet = getById(wallet.getUid())
+
+    }
+
+    private Wallet createWalletEntity(CreateWalletRequestDTO createWalletRequestDTO,
+                                      WalletType walletType) {
         return Wallet.builder()
                 .name(createWalletRequestDTO.name())
                 .status(WalletStatus.ACTIVE)
