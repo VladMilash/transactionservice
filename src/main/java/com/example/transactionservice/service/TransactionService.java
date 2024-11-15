@@ -1,5 +1,7 @@
 package com.example.transactionservice.service;
 
+import com.example.transactionservice.entity.Transaction;
+
 public interface TransactionService {
-    TransactionService createTransaction(TransactionService transaction);
+    Transaction createTransaction(Transaction transaction);
 }

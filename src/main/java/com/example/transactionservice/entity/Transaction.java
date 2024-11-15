@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "transactions")
 @Data
-public class Transactions {
+public class Transaction {
     @Id
     @GeneratedValue
     @Column(name = "uid", columnDefinition = "UUID")
