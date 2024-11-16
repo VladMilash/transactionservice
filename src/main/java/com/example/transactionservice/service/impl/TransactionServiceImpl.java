@@ -33,18 +33,20 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
-        List<TransactionResponseDTO> transactions = transactionRepository.getTransactionsByFilters(
+        log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
+        return transactionRepository.getTransactionsByFilters(
                         transactionRequestSearchDTO.userUid(),
                         transactionRequestSearchDTO.walletUid(),
                         transactionRequestSearchDTO.type(),
                         transactionRequestSearchDTO.state(),
                         transactionRequestSearchDTO.dateFrom(),
                         transactionRequestSearchDTO.dateTo()
-                ).map(transactions1 -> {
-                    return transactions1;
+                ).map(transactions -> {
+                    log.info("Successfully fetched {} transactions", transactions.size());
+                    return transactions.stream().map(transactionMapper::map).toList();
                 })
                 .orElseThrow(() -> {
-                    return new ApiException("ERR", "ERR");
-                }).stream().map(transactionMapper::map).toList();
+                    return new ApiException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
+                });
     }
 }
