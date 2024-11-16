@@ -32,6 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
         return savedTransaction;
     }
 
+    //TODO: реализовать проверку корректности диапазанов дат
     @Override
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
         log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
