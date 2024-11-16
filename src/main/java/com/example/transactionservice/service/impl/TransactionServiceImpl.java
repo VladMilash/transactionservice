@@ -46,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
                     return transactions.stream().map(transactionMapper::map).toList();
                 })
                 .orElseThrow(() -> {
-                    return new ApiException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
+                    return new NotFoundEntityException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
                 });
     }
 }
