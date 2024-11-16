@@ -39,13 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
         log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
 
-        if (transactionRequestSearchDTO.dateFrom() != null && transactionRequestSearchDTO.dateTo() != null) {
-            if (transactionRequestSearchDTO.dateFrom().isAfter(transactionRequestSearchDTO.dateTo())) {
-                throw new MethodArgumentNotValidCustomException("Invalid date range: dateFrom cannot be after dateTo", "INVALID_DATE_RANGE");
-            }
-        } else if (transactionRequestSearchDTO.dateFrom() != null || transactionRequestSearchDTO.dateTo() != null) {
-            throw new MethodArgumentNotValidCustomException("Both dateFrom and dateTo must be provided", "INVALID_DATE_RANGE");
-        }
+        validateDateRange(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo());
 
         return transactionRepository.getTransactionsByFilters(
                         transactionRequestSearchDTO.userUid(),
@@ -63,7 +57,13 @@ public class TransactionServiceImpl implements TransactionService {
                 });
     }
 
-    private boolean validateLocalDateFromFilterSearch(LocalDateTime dateFrom, LocalDateTime dateTo) {
-        return (dateFrom.isBefore(dateTo));
+    private void validateDateRange(LocalDateTime dateFrom, LocalDateTime dateTo) {
+        if (dateFrom != null && dateTo != null) {
+            if (dateFrom.isAfter(dateTo)) {
+                throw new MethodArgumentNotValidCustomException("Invalid date range: dateFrom cannot be after dateTo", "INVALID_DATE_RANGE");
+            }
+        } else if (dateFrom != null || dateTo != null) {
+            throw new MethodArgumentNotValidCustomException("Both dateFrom and dateTo must be provided", "INVALID_DATE_RANGE");
+        }
     }
 }
