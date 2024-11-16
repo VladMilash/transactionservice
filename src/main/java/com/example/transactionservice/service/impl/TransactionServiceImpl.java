@@ -39,11 +39,14 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
         log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
 
-        if ((transactionRequestSearchDTO.dateFrom() != null) && (transactionRequestSearchDTO.dateTo() != null)) {
-            if (!validateLocalDateFromFilterSearch(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo())) {
-                throw new MethodArgumentNotValidCustomException("Invalid date range: dateFrom cannot be after dateTo", "INVALID_DATE_RAGE");
+        if (transactionRequestSearchDTO.dateFrom() != null && transactionRequestSearchDTO.dateTo() != null) {
+            if (transactionRequestSearchDTO.dateFrom().isAfter(transactionRequestSearchDTO.dateTo())) {
+                throw new MethodArgumentNotValidCustomException("Invalid date range: dateFrom cannot be after dateTo", "INVALID_DATE_RANGE");
             }
+        } else if (transactionRequestSearchDTO.dateFrom() != null || transactionRequestSearchDTO.dateTo() != null) {
+            throw new MethodArgumentNotValidCustomException("Both dateFrom and dateTo must be provided", "INVALID_DATE_RANGE");
         }
+
         return transactionRepository.getTransactionsByFilters(
                         transactionRequestSearchDTO.userUid(),
                         transactionRequestSearchDTO.walletUid(),
