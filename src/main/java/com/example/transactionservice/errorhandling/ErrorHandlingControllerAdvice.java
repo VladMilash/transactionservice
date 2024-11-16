@@ -1,4 +1,4 @@
-package errorhandling;
+package com.example.transactionservice.errorhandling;
 
 import com.example.transactionservice.dto.ValidationErrorResponse;
 import com.example.transactionservice.dto.Violation;
