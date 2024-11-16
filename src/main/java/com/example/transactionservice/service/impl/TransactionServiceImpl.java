@@ -7,22 +7,25 @@ import com.example.transactionservice.exception.NotFoundEntityException;
 import com.example.transactionservice.mapper.TransactionMapper;
 import com.example.transactionservice.repository.TransactionRepository;
 import com.example.transactionservice.service.TransactionService;
-import groovy.util.logging.Slf4j;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-@lombok.extern.slf4j.Slf4j
+@Validated
+@Slf4j
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать может стоит принимать DTO
     @Override
-    public Transaction createTransaction(Transaction transaction) {
+    public Transaction createTransaction(@Valid Transaction transaction) {
         Transaction savedTransaction = transactionRepository.save(transaction);
         log.info("Transaction with id: {} saved successfully", savedTransaction.getUid());
 

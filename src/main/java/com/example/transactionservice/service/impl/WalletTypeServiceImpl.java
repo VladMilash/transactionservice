@@ -5,18 +5,23 @@ import com.example.transactionservice.entity.enums.UserType;
 import com.example.transactionservice.exception.NotFoundEntityException;
 import com.example.transactionservice.repository.WalletTypeRepository;
 import com.example.transactionservice.service.WalletTypeService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class WalletTypeServiceImpl implements WalletTypeService {
     private final WalletTypeRepository walletTypeRepository;
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
-    public WalletType getWalletTypeByName(String name) {
+    public WalletType getWalletTypeByName(@NotNull String name) {
         return walletTypeRepository.getWalletTypeByName(name)
                 .map(walletType -> {
                     log.info("WalletType found with name: {}", name);
@@ -29,8 +34,9 @@ public class WalletTypeServiceImpl implements WalletTypeService {
                 });
     }
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать насчет того чтобы принимать DTO
     @Override
-    public WalletType getByUserType(UserType userType) {
+    public WalletType getByUserType(@Valid UserType userType) {
         return walletTypeRepository.findByUserType(userType)
                 .map(walletType -> {
                     log.info("WalletType found with userType: {}", userType);

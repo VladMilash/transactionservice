@@ -8,14 +8,19 @@ import com.example.transactionservice.exception.NotFoundEntityException;
 import com.example.transactionservice.repository.WalletRepository;
 import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.service.WalletTypeService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jaxb.core.v2.TODO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Validated
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -23,8 +28,9 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final WalletTypeService walletTypeService;
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
-    public Wallet createWallet(CreateWalletRequestDTO createWalletRequestDTO) {
+    public Wallet createWallet(@Valid CreateWalletRequestDTO createWalletRequestDTO) {
         log.info("Creating wallet for user with UID: {}", createWalletRequestDTO.user_uid());
 
         WalletType walletType = walletTypeService.getByUserType(createWalletRequestDTO.userType());
@@ -39,8 +45,9 @@ public class WalletServiceImpl implements WalletService {
         return savedWallet;
     }
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
-    public Wallet getById(UUID id) {
+    public Wallet getById(@NotNull UUID id) {
         return walletRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Wallet with id {} not found", id);
@@ -48,8 +55,9 @@ public class WalletServiceImpl implements WalletService {
                 });
     }
 
+    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать может стоит принимать DTO
     @Override
-    public Wallet update(Wallet wallet) {
+    public Wallet update(@Valid Wallet wallet) {
         log.info("Attempting to update wallet with ID: {}", wallet.getUid());
 
         Wallet foundedWallet = getById(wallet.getUid());
