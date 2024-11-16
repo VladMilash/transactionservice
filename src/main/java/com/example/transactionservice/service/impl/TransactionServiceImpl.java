@@ -34,7 +34,6 @@ public class TransactionServiceImpl implements TransactionService {
         return savedTransaction;
     }
 
-    //TODO: подумать над решакторингом
     @Override
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
         log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
