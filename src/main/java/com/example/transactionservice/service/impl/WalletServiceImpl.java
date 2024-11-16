@@ -28,7 +28,6 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final WalletTypeService walletTypeService;
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
     public Wallet createWallet(@Valid CreateWalletRequestDTO createWalletRequestDTO) {
         log.info("Creating wallet for user with UID: {}", createWalletRequestDTO.user_uid());
@@ -45,7 +44,6 @@ public class WalletServiceImpl implements WalletService {
         return savedWallet;
     }
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
     public Wallet getById(@NotNull UUID id) {
         return walletRepository.findById(id)
@@ -55,7 +53,7 @@ public class WalletServiceImpl implements WalletService {
                 });
     }
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать может стоит принимать DTO
+    //    TODO: подумать может стоит принимать DTO
     @Override
     public Wallet update(@Valid Wallet wallet) {
         log.info("Attempting to update wallet with ID: {}", wallet.getUid());

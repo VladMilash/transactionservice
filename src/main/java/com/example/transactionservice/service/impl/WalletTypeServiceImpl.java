@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 public class WalletTypeServiceImpl implements WalletTypeService {
     private final WalletTypeRepository walletTypeRepository;
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400
     @Override
     public WalletType getWalletTypeByName(@NotNull String name) {
         return walletTypeRepository.getWalletTypeByName(name)
@@ -34,7 +33,7 @@ public class WalletTypeServiceImpl implements WalletTypeService {
                 });
     }
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать насчет того чтобы принимать DTO
+    //    TODO: подумать насчет того чтобы принимать DTO
     @Override
     public WalletType getByUserType(@Valid UserType userType) {
         return walletTypeRepository.findByUserType(userType)

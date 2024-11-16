@@ -23,7 +23,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
 
-    //    TODO: обработать исключение ConstraintViolationException, чтобы при неккоректных данных возвращалась ошибка 400, подумать может стоит принимать DTO
+    //    TODO: подумать может стоит принимать DTO
     @Override
     public Transaction createTransaction(@Valid Transaction transaction) {
         Transaction savedTransaction = transactionRepository.save(transaction);
