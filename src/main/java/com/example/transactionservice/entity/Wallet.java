@@ -51,6 +51,7 @@ public class Wallet {
 
     @NotNull
     @Column(name = "balance")
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(name = "archived_at")

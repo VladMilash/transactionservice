@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
@@ -20,11 +21,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             "(:state IS NULL OR t.state = :state) AND " +
             "(:dateFrom IS NULL OR t.createdAt >= :dateFrom) AND " +
             "(:dateTo IS NULL OR t.createdAt <= :dateTo)")
-    List<Transaction> getTransactionsByFilters(@Param("userUid") UUID userUid,
-                                               @Param("walletUid") UUID walletUid,
-                                               @Param("type") TransactionType type,
-                                               @Param("state") State state,
-                                               @Param("dateFrom") LocalDateTime dateFrom,
-                                               @Param("dateTo") LocalDateTime dateTo);
+    Optional<List<Transaction>> getTransactionsByFilters(@Param("userUid") UUID userUid,
+                                                        @Param("walletUid") UUID walletUid,
+                                                        @Param("type") TransactionType type,
+                                                        @Param("state") State state,
+                                                        @Param("dateFrom") LocalDateTime dateFrom,
+                                                        @Param("dateTo") LocalDateTime dateTo);
 }
 
