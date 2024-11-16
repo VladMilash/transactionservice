@@ -58,7 +58,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorMessage> onMismatchException(MethodArgumentTypeMismatchException exception) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorMessage(exception.getMessage(), "TYPE_MISMATCH_EXCEPTION"));
     }
 }
