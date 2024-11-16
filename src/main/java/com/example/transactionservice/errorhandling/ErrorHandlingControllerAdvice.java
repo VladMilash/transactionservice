@@ -1,9 +1,12 @@
 package com.example.transactionservice.errorhandling;
 
+import com.example.transactionservice.dto.ErrorMessage;
 import com.example.transactionservice.dto.ValidationErrorResponse;
 import com.example.transactionservice.dto.Violation;
+import com.example.transactionservice.exception.NotFoundEntityException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,5 +45,12 @@ public class ErrorHandlingControllerAdvice {
                 .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
         return new ValidationErrorResponse(violations);
+    }
+
+    @ExceptionHandler(NotFoundEntityException.class)
+    public ResponseEntity<ErrorMessage> onNotFoundEntityException(NotFoundEntityException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(exception.getMessage(), exception.getErrorCode()));
     }
 }
