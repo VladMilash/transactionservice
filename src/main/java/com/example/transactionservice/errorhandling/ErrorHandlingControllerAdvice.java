@@ -3,6 +3,7 @@ package com.example.transactionservice.errorhandling;
 import com.example.transactionservice.dto.ErrorMessage;
 import com.example.transactionservice.dto.ValidationErrorResponse;
 import com.example.transactionservice.dto.Violation;
+import com.example.transactionservice.exception.MethodArgumentNotValidCustomException;
 import com.example.transactionservice.exception.NotFoundEntityException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -61,4 +62,15 @@ public class ErrorHandlingControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorMessage(exception.getMessage(), "TYPE_MISMATCH_EXCEPTION"));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidCustomException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ValidationErrorResponse onMethodArgumentNotValidCustomException(MethodArgumentNotValidCustomException e) {
+        final List<Violation> violations = List.of(
+                new Violation("dataFrom and dateTo", e.getMessage())
+        );
+        return new ValidationErrorResponse(violations);
+    }
+
 }
