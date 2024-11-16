@@ -34,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
         return savedTransaction;
     }
 
-    //TODO: сделать рефакторинг велидации дат и также подумать насчет кейса, когда одна дата null, а другая - нет
+    //TODO: подумать над решакторингом
     @Override
     public List<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO) {
         log.info("Fetching transactions with filters: {}", transactionRequestSearchDTO);
