@@ -52,6 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
                     return transactions.stream().map(transactionMapper::map).toList();
                 })
                 .orElseThrow(() -> {
+                    log.error("Transactions not found for the given filters: {}", transactionRequestSearchDTO);
                     return new NotFoundEntityException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
                 });
     }
@@ -59,9 +60,11 @@ public class TransactionServiceImpl implements TransactionService {
     private void validateDateRange(LocalDateTime dateFrom, LocalDateTime dateTo) {
         if (dateFrom != null && dateTo != null) {
             if (dateFrom.isAfter(dateTo)) {
+                log.error("Invalid date range: dateFrom: {} cannot be after dateTo: {}", dateFrom, dateTo);
                 throw new MethodArgumentNotValidCustomException("Invalid date range: dateFrom cannot be after dateTo", "INVALID_DATE_RANGE");
             }
         } else if (dateFrom != null || dateTo != null) {
+            log.error("Both dateFrom: {} and dateTo: {} must be provided", dateFrom, dateTo);
             throw new MethodArgumentNotValidCustomException("Both dateFrom and dateTo must be provided", "INVALID_DATE_RANGE");
         }
     }
