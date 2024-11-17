@@ -11,6 +11,9 @@ import com.example.transactionservice.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -55,6 +58,27 @@ public class TransactionServiceImpl implements TransactionService {
                     log.error("Transactions not found for the given filters: {}", transactionRequestSearchDTO);
                     return new NotFoundEntityException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
                 });
+    }
+
+    @Override
+    public Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, int page, int size) {
+        log.info("Fetching transactions with filters: {}, page: {}, size: {}", transactionRequestSearchDTO, page, size);
+
+        validateDateRange(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo());
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Transaction> transactionsPage = transactionRepository.getTransactionsByFilters(
+                transactionRequestSearchDTO.userUid(),
+                transactionRequestSearchDTO.walletUid(),
+                transactionRequestSearchDTO.type(),
+                transactionRequestSearchDTO.state(),
+                transactionRequestSearchDTO.dateFrom(),
+                transactionRequestSearchDTO.dateTo(),
+                pageable).orElseThrow(() -> {
+            log.error("Transactions not found for the given filters: {}, page: {}, size: {}", transactionRequestSearchDTO, page, size);
+            return new NotFoundEntityException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
+        });
+        return transactionsPage.map(transactionMapper::map);
     }
 
     private void validateDateRange(LocalDateTime dateFrom, LocalDateTime dateTo) {
