@@ -9,6 +9,8 @@ import com.example.transactionservice.mapper.TransactionMapper;
 import com.example.transactionservice.repository.TransactionRepository;
 import com.example.transactionservice.service.TransactionService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -61,7 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, int page, int size) {
+    public Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, @Min(0) int page, @Min(1) @Max(100)int size) {
         log.info("Fetching transactions with filters: {}, page: {}, size: {}", transactionRequestSearchDTO, page, size);
 
         validateDateRange(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo());
