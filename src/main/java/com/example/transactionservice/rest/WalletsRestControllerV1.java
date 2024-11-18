@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1//wallets")
+@RequestMapping("api/v1/wallets")
 public class WalletsRestControllerV1 {
     private final WalletService walletService;
 
