@@ -1,10 +1,13 @@
 package com.example.transactionservice.service.impl;
 
 import com.example.transactionservice.dto.CreateWalletRequestDTO;
+import com.example.transactionservice.dto.WalletResponseDTO;
 import com.example.transactionservice.entity.Wallet;
 import com.example.transactionservice.entity.WalletType;
 import com.example.transactionservice.entity.enums.WalletStatus;
 import com.example.transactionservice.exception.NotFoundEntityException;
+import com.example.transactionservice.mapper.TransactionMapper;
+import com.example.transactionservice.mapper.WalletMapper;
 import com.example.transactionservice.repository.WalletRepository;
 import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.service.WalletTypeService;
@@ -12,12 +15,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.jaxb.core.v2.TODO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Validated
@@ -27,6 +30,8 @@ import java.util.UUID;
 public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final WalletTypeService walletTypeService;
+    private final WalletMapper walletMapper;
+    private final TransactionMapper transactionMapper;
 
     @Override
     public Wallet createWallet(@Valid CreateWalletRequestDTO createWalletRequestDTO) {
@@ -90,5 +95,18 @@ public class WalletServiceImpl implements WalletService {
                 .userUid(createWalletRequestDTO.user_uid())
                 .walletType(walletType)
                 .build();
+    }
+
+    @Override
+    public List<WalletResponseDTO> findByUserUid(UUID userUid) {
+        return walletRepository.findAllByUserUid(userUid)
+                .map(wallets -> {
+                    log.info("Successfully founded wallets for userId: {}", userUid);
+                    return wallets.stream().map(walletMapper::map).toList();
+                })
+                .orElseThrow(() -> {
+                    log.error("Wallets for userId: {} not found", userUid);
+                    return new NotFoundEntityException("Wallets not found", "WALLETS_NOT_FOUND");
+                });
     }
 }
