@@ -17,4 +17,7 @@ public interface WalletService {
 
     List<WalletResponseDTO> findByUserUid(UUID userUid);
 
+    WalletResponseDTO findAllByUserUidAndCurrencyCode(UUID userUid, String currencyCode);
+
+
 }

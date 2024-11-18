@@ -69,6 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
         validateDateRange(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo());
 
         Pageable pageable = PageRequest.of(page, size);
+
         Page<Transaction> transactionsPage = transactionRepository.getTransactionsByFilters(
                 transactionRequestSearchDTO.userUid(),
                 transactionRequestSearchDTO.walletUid(),

@@ -13,8 +13,10 @@ import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.service.WalletTypeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -98,7 +100,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public List<WalletResponseDTO> findByUserUid(UUID userUid) {
+    public List<WalletResponseDTO> findByUserUid(@NotNull UUID userUid) {
         return walletRepository.findAllByUserUid(userUid)
                 .map(wallets -> {
                     log.info("Successfully founded wallets for userId: {}", userUid);
@@ -107,6 +109,20 @@ public class WalletServiceImpl implements WalletService {
                 .orElseThrow(() -> {
                     log.error("Wallets for userId: {} not found", userUid);
                     return new NotFoundEntityException("Wallets not found", "WALLETS_NOT_FOUND");
+                });
+    }
+
+    @Override
+    public WalletResponseDTO findAllByUserUidAndCurrencyCode(@NotNull UUID userUid,
+                                                             @NotNull @Size(min = 3, max = 3, message = "{validation.name.size}") String currencyCode) {
+        return walletRepository.findAllByUserUidAndCurrencyCode(userUid, currencyCode)
+                .map(wallet -> {
+                    log.info("Successfully founded wallet for userId: {} and currencyCode: {}", userUid, currencyCode);
+                    return walletMapper.map(wallet);
+                })
+                .orElseThrow(() -> {
+                    log.error("Wallet for userId: {} and currencyCode: {} not found", userUid, currencyCode);
+                    return new NotFoundEntityException("Wallet not found", "WALLETS_NOT_FOUND");
                 });
     }
 }
