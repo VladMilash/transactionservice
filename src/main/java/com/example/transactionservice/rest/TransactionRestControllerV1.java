@@ -2,16 +2,14 @@ package com.example.transactionservice.rest;
 
 import com.example.transactionservice.dto.TransactionRequestSearchDTO;
 import com.example.transactionservice.dto.TransactionResponseDTO;
+import com.example.transactionservice.dto.TransactionStatusResponseDTO;
 import com.example.transactionservice.entity.enums.State;
 import com.example.transactionservice.entity.enums.TransactionType;
 import com.example.transactionservice.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -35,6 +33,11 @@ public class TransactionRestControllerV1 {
         TransactionRequestSearchDTO transactionRequestSearchDTO = new TransactionRequestSearchDTO(
                 userUid, walletUid, type, state, dateFrom, dateTo);
         return transactionService.getTransactionsByFilters(transactionRequestSearchDTO, page, size);
+    }
+
+    @GetMapping("/{uid}/status")
+    public TransactionStatusResponseDTO getTransactionStatus(@PathVariable("uid") UUID uid) {
+        return transactionService.getTransactionStatus(uid);
     }
 }
 

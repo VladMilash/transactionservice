@@ -2,6 +2,7 @@ package com.example.transactionservice.service.impl;
 
 import com.example.transactionservice.dto.TransactionRequestSearchDTO;
 import com.example.transactionservice.dto.TransactionResponseDTO;
+import com.example.transactionservice.dto.TransactionStatusResponseDTO;
 import com.example.transactionservice.entity.Transaction;
 import com.example.transactionservice.exception.MethodArgumentNotValidCustomException;
 import com.example.transactionservice.exception.NotFoundEntityException;
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 @Slf4j
@@ -63,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, @Min(0) int page, @Min(1) @Max(100)int size) {
+    public Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, @Min(0) int page, @Min(1) @Max(100) int size) {
         log.info("Fetching transactions with filters: {}, page: {}, size: {}", transactionRequestSearchDTO, page, size);
 
         validateDateRange(transactionRequestSearchDTO.dateFrom(), transactionRequestSearchDTO.dateTo());
@@ -94,5 +96,21 @@ public class TransactionServiceImpl implements TransactionService {
             log.error("Both dateFrom: {} and dateTo: {} must be provided", dateFrom, dateTo);
             throw new MethodArgumentNotValidCustomException("Both dateFrom and dateTo must be provided", "INVALID_DATE_RANGE");
         }
+    }
+
+    @Override
+    public TransactionStatusResponseDTO getTransactionStatus(UUID uid) {
+        return transactionRepository.findTransactionByUid(uid)
+                .map(transaction -> {
+                    log.info("Transactions with uid: {} successfully founded", uid);
+                    return new TransactionStatusResponseDTO(
+                            uid,
+                            transaction.getState(),
+                            transaction.getCreatedAt());
+                })
+                .orElseThrow(() -> {
+                    log.error("Transactions with uid: {} not found", uid);
+                    return new NotFoundEntityException("Transactions with uid: " + uid + " not found", "TRANSACTION_NOT_FOUND");
+                });
     }
 }

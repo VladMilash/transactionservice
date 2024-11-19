@@ -46,5 +46,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
                                                          @Param("dateFrom") LocalDateTime dateFrom,
                                                          @Param("dateTo") LocalDateTime dateTo,
                                                          Pageable pageable);
+
+    Optional<Transaction> findTransactionByUid(UUID uid);
 }
 

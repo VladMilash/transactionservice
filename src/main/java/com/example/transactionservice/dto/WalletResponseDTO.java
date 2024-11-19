@@ -10,7 +10,6 @@ import java.util.UUID;
 public record WalletResponseDTO(
         UUID uid,
         LocalDateTime createdAt,
-        LocalDateTime modifiedAt,
         String name,
         WalletType walletType,
         UUID userUid,

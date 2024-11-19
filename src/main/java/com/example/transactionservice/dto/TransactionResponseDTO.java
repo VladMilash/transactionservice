@@ -15,12 +15,10 @@ import java.util.UUID;
 public record TransactionResponseDTO(
         UUID id,
         LocalDateTime createdAt,
-        LocalDateTime modifiedAt,
         UUID userUid,
         Wallet wallet,
         String walletName,
         BigDecimal amount,
         TransactionType type,
-        State state,
-        PaymentRequest paymentRequest) {
+        State state) {
 }
