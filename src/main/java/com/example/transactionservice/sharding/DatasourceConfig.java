@@ -92,7 +92,7 @@ public class DatasourceConfig {
     }
 
     @Primary
-    @Bean
+    @Bean(name = "myEntityManager")
     public EntityManager entityManager(@Qualifier("myEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();
     }
