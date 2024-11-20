@@ -1,6 +1,7 @@
 package com.example.transactionservice.config;
 
-import org.apache.shardingsphere.driver.api.ShardingSphereDataSourceFactory;
+import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
+import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -53,6 +54,9 @@ public class DataSourceConfig {
         Properties props = new Properties();
         props.setProperty("sql-show", "true");
 
-        return ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, Collections.emptyList(), props);
+        ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
+        return ShardingDataSourceFactory.createDataSource(dataSourceMap, shardingRuleConfig, new Properties());
+
+//        return ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, Collections.emptyList(), props);
     }
 }
