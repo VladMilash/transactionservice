@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.UUID;
 
 import static com.example.transactionservice.sharding.ShardDeterminer.determineShardKey;
+import static com.example.transactionservice.sharding.ShardDeterminer.determineDefaultShard;
+
 
 @Slf4j
 public class ShardContext {
@@ -21,6 +23,8 @@ public class ShardContext {
     public static void clear() {
         log.info("Current shard before clear : " + ShardContext.getCurrentShard());
         contextHolder.remove();
+        log.info("Current shard after clear : " + ShardContext.getCurrentShard());
+
     }
 
     public static void determineAndSetShard(String user_uid) {
@@ -32,5 +36,16 @@ public class ShardContext {
         log.info("The selected shard is : " + shardKey);
         log.info("The thread is : " + Thread.currentThread().getName());
         ShardContext.setCurrentShard(shardKey);
+    }
+    public static void setDefaultShard() {
+        String shardKey = determineDefaultShard();
+        log.info("The selected default shard is : " + shardKey);
+        log.info("The thread is : " + Thread.currentThread().getName());
+        ShardContext.setCurrentShard(shardKey);
+    }
+
+    public static void resetToDefault() {
+        clear();
+        setDefaultShard();
     }
 }

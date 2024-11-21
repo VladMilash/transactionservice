@@ -11,12 +11,15 @@ import com.example.transactionservice.mapper.WalletMapper;
 import com.example.transactionservice.repository.WalletRepository;
 import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.service.WalletTypeService;
+
+import static com.example.transactionservice.sharding.ShardContext.determineAndSetShard;
+
+import com.example.transactionservice.sharding.ShardContext;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +36,6 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final WalletTypeService walletTypeService;
     private final WalletMapper walletMapper;
-    private final TransactionMapper transactionMapper;
 
     @Override
     public Wallet createWallet(@Valid CreateWalletRequestDTO createWalletRequestDTO) {
@@ -45,25 +47,37 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = createWalletEntity(createWalletRequestDTO, walletType);
         log.info("Wallet entity created: {}", wallet);
 
-        Wallet savedWallet = walletRepository.save(wallet);
-        log.info("Wallet successfully created with ID: {}", savedWallet.getUid());
+        determineAndSetShard(createWalletRequestDTO.user_uid());
 
-        return savedWallet;
+        try {
+            Wallet savedWallet = walletRepository.save(wallet);
+            log.info("Wallet successfully created with ID: {}", savedWallet.getUid());
+
+            return savedWallet;
+        } finally {
+            ShardContext.resetToDefault();;
+        }
     }
 
     @Override
     public Wallet getById(@NotNull UUID id) {
-        return walletRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Wallet with id {} not found", id);
-                    return new NotFoundEntityException("Wallet with id " + id + " not found", "NOT_FOUND_ENTITY");
-                });
+        determineAndSetShard(id);
+        try {
+            return walletRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.error("Wallet with id {} not found", id);
+                        return new NotFoundEntityException("Wallet with id " + id + " not found", "NOT_FOUND_ENTITY");
+                    });
+        } finally {
+            ShardContext.resetToDefault();
+        }
     }
 
     //    TODO: подумать может стоит принимать DTO
     @Override
     public Wallet update(@Valid Wallet wallet) {
         log.info("Attempting to update wallet with ID: {}", wallet.getUid());
+        determineAndSetShard(wallet.getUserUid());
 
         Wallet foundedWallet = getById(wallet.getUid());
         log.info("Existing wallet found: {}", foundedWallet);
