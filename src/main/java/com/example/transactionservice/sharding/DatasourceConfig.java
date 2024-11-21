@@ -81,19 +81,19 @@ public class DatasourceConfig {
     }
 
     @Primary
-    @Bean(name = "myEntityManagerFactory")
+    @Bean(name = "entityManagerFactory")
     public EntityManagerFactory entityManagerFactory(@Qualifier("myRoutingDatasource") DataSource routingDataSource) {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(routingDataSource);
-        factoryBean.setPackagesToScan("mentoring.transactionServiceApi");
+        factoryBean.setPackagesToScan("com.example.transactionservice");
         factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factoryBean.afterPropertiesSet();
         return factoryBean.getObject();
     }
 
     @Primary
-    @Bean(name = "myEntityManager")
-    public EntityManager entityManager(@Qualifier("myEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "entityManager")
+    public EntityManager entityManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();
     }
 
