@@ -16,6 +16,6 @@ public interface TransactionService {
 
     Page<TransactionResponseDTO> getTransactionsByFilters(TransactionRequestSearchDTO transactionRequestSearchDTO, int page, int size);
 
-    TransactionStatusResponseDTO getTransactionStatus(UUID uid);
+    TransactionStatusResponseDTO getTransactionStatus(UUID userUid, UUID uid);
 
 }

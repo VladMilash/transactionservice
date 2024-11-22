@@ -47,30 +47,19 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = createWalletEntity(createWalletRequestDTO, walletType);
         log.info("Wallet entity created: {}", wallet);
 
-        determineAndSetShard(createWalletRequestDTO.user_uid());
+        Wallet savedWallet = walletRepository.save(wallet);
+        log.info("Wallet successfully created with ID: {}", savedWallet.getUid());
 
-        try {
-            Wallet savedWallet = walletRepository.save(wallet);
-            log.info("Wallet successfully created with ID: {}", savedWallet.getUid());
-
-            return savedWallet;
-        } finally {
-            ShardContext.resetToDefault();;
-        }
+        return savedWallet;
     }
 
     @Override
     public Wallet getById(@NotNull UUID id) {
-        determineAndSetShard(id);
-        try {
-            return walletRepository.findById(id)
-                    .orElseThrow(() -> {
-                        log.error("Wallet with id {} not found", id);
-                        return new NotFoundEntityException("Wallet with id " + id + " not found", "NOT_FOUND_ENTITY");
-                    });
-        } finally {
-            ShardContext.resetToDefault();
-        }
+        return walletRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Wallet with id {} not found", id);
+                    return new NotFoundEntityException("Wallet with id " + id + " not found", "NOT_FOUND_ENTITY");
+                });
     }
 
     //    TODO: подумать может стоит принимать DTO

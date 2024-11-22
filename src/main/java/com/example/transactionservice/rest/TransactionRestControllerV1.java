@@ -36,8 +36,8 @@ public class TransactionRestControllerV1 {
     }
 
     @GetMapping("/{uid}/status")
-    public TransactionStatusResponseDTO getTransactionStatus(@PathVariable("uid") UUID uid) {
-        return transactionService.getTransactionStatus(uid);
+    public TransactionStatusResponseDTO getTransactionStatus(@RequestHeader("user_uid") UUID userUid, @PathVariable("uid") UUID uid) {
+        return transactionService.getTransactionStatus(userUid, uid);
     }
 }
 
