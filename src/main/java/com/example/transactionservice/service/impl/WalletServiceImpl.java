@@ -104,28 +104,41 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public List<WalletResponseDTO> findByUserUid(@NotNull UUID userUid) {
-        return walletRepository.findAllByUserUid(userUid)
-                .map(wallets -> {
-                    log.info("Successfully founded wallets for userId: {}", userUid);
-                    return wallets.stream().map(walletMapper::map).toList();
-                })
-                .orElseThrow(() -> {
-                    log.error("Wallets for userId: {} not found", userUid);
-                    return new NotFoundEntityException("Wallets not found", "WALLETS_NOT_FOUND");
-                });
+
+        ShardContext.determineAndSetShard(userUid);
+
+        try {
+            return walletRepository.findAllByUserUid(userUid)
+                    .map(wallets -> {
+                        log.info("Successfully founded wallets for userId: {}", userUid);
+                        return wallets.stream().map(walletMapper::map).toList();
+                    })
+                    .orElseThrow(() -> {
+                        log.error("Wallets for userId: {} not found", userUid);
+                        return new NotFoundEntityException("Wallets not found", "WALLETS_NOT_FOUND");
+                    });
+        } finally {
+            ShardContext.clear();
+        }
     }
 
     @Override
     public WalletResponseDTO findAllByUserUidAndCurrencyCode(@NotNull UUID userUid,
                                                              @NotNull @Size(min = 3, max = 3, message = "{validation.name.size}") String currencyCode) {
-        return walletRepository.findAllByUserUidAndCurrencyCode(userUid, currencyCode)
-                .map(wallet -> {
-                    log.info("Successfully founded wallet for userId: {} and currencyCode: {}", userUid, currencyCode);
-                    return walletMapper.map(wallet);
-                })
-                .orElseThrow(() -> {
-                    log.error("Wallet for userId: {} and currencyCode: {} not found", userUid, currencyCode);
-                    return new NotFoundEntityException("Wallet not found", "WALLETS_NOT_FOUND");
-                });
+        ShardContext.determineAndSetShard(userUid);
+
+        try {
+            return walletRepository.findAllByUserUidAndCurrencyCode(userUid, currencyCode)
+                    .map(wallet -> {
+                        log.info("Successfully founded wallet for userId: {} and currencyCode: {}", userUid, currencyCode);
+                        return walletMapper.map(wallet);
+                    })
+                    .orElseThrow(() -> {
+                        log.error("Wallet for userId: {} and currencyCode: {} not found", userUid, currencyCode);
+                        return new NotFoundEntityException("Wallet not found", "WALLETS_NOT_FOUND");
+                    });
+        } finally {
+            ShardContext.clear();
+        }
     }
 }
