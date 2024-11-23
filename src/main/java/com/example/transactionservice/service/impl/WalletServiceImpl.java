@@ -2,11 +2,12 @@ package com.example.transactionservice.service.impl;
 
 import com.example.transactionservice.dto.CreateWalletRequestDTO;
 import com.example.transactionservice.dto.WalletResponseDTO;
+import com.example.transactionservice.entity.Transaction;
 import com.example.transactionservice.entity.Wallet;
 import com.example.transactionservice.entity.WalletType;
+import com.example.transactionservice.entity.enums.TransactionType;
 import com.example.transactionservice.entity.enums.WalletStatus;
 import com.example.transactionservice.exception.NotFoundEntityException;
-import com.example.transactionservice.mapper.TransactionMapper;
 import com.example.transactionservice.mapper.WalletMapper;
 import com.example.transactionservice.repository.WalletRepository;
 import com.example.transactionservice.service.WalletService;
@@ -141,4 +142,37 @@ public class WalletServiceImpl implements WalletService {
             ShardContext.clear();
         }
     }
+
+    @Override
+    public Wallet changeBalance(Transaction transaction) {
+        TransactionType type = transaction.getType();
+        switch (type) {
+            case TOP_UP -> {
+                return topUp(transaction);
+            }
+            case WITHDRAWAL -> {
+                return withdrawal(transaction);
+            }
+            default -> {
+                log.warn("Wrong transaction type : " + type + ". Return wallet without changes.");
+                return transaction.getWallet();
+            }
+        }
+    }
+
+    private Wallet topUp(Transaction transaction) {
+        Wallet wallet = transaction.getWallet();
+        wallet.setBalance(wallet.getBalance().add(transaction.getAmount()));
+        wallet.setModifiedAt(LocalDateTime.now());
+        return walletRepository.save(wallet);
+    }
+
+    private Wallet withdrawal(Transaction transaction) {
+        Wallet wallet = transaction.getWallet();
+        wallet.setBalance(wallet.getBalance().subtract(transaction.getAmount()));
+        wallet.setModifiedAt(LocalDateTime.now());
+        return walletRepository.save(wallet);
+    }
+
+
 }

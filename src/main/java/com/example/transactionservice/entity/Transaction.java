@@ -4,7 +4,10 @@ import com.example.transactionservice.entity.enums.State;
 import com.example.transactionservice.entity.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -14,6 +17,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "transactions")
 @Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class Transaction {
     @Id
     @GeneratedValue

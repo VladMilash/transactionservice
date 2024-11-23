@@ -2,6 +2,7 @@ package com.example.transactionservice.service;
 
 import com.example.transactionservice.dto.CreateWalletRequestDTO;
 import com.example.transactionservice.dto.WalletResponseDTO;
+import com.example.transactionservice.entity.Transaction;
 import com.example.transactionservice.entity.Wallet;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface WalletService {
     List<WalletResponseDTO> findByUserUid(UUID userUid);
 
     WalletResponseDTO findAllByUserUidAndCurrencyCode(UUID userUid, String currencyCode);
+
+    Wallet changeBalance(Transaction transaction);
 
 
 }

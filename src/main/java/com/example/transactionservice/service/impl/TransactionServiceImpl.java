@@ -4,6 +4,7 @@ import com.example.transactionservice.dto.TransactionRequestSearchDTO;
 import com.example.transactionservice.dto.TransactionResponseDTO;
 import com.example.transactionservice.dto.TransactionStatusResponseDTO;
 import com.example.transactionservice.entity.Transaction;
+import com.example.transactionservice.entity.enums.State;
 import com.example.transactionservice.exception.MethodArgumentNotValidCustomException;
 import com.example.transactionservice.exception.NotFoundEntityException;
 import com.example.transactionservice.mapper.TransactionMapper;
@@ -19,7 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
@@ -36,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     //    TODO: подумать может стоит принимать DTO
     @Override
-    public Transaction createTransaction(@Valid Transaction transaction) {
+    public Transaction saveTransaction(@Valid Transaction transaction) {
         Transaction savedTransaction = transactionRepository.save(transaction);
         log.info("Transaction with id: {} saved successfully", savedTransaction.getUid());
 
@@ -121,6 +125,14 @@ public class TransactionServiceImpl implements TransactionService {
         } finally {
             ShardContext.clear();
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
+    @Override
+    public void updateTransactionStatus(@NotNull Transaction transactionForUpdate, @NotNull State newStatus) {
+        transactionForUpdate.setState(newStatus);
+        saveTransaction(transactionForUpdate);
     }
 
     private void validateDateRange(LocalDateTime dateFrom, LocalDateTime dateTo) {

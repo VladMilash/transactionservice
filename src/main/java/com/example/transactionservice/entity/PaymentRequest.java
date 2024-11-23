@@ -3,7 +3,10 @@ package com.example.transactionservice.entity;
 import com.example.transactionservice.entity.enums.State;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
@@ -15,6 +18,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "payment_requests")
 @Data
+@Builder(toBuilder = true)
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class PaymentRequest {
     @Id
     @GeneratedValue

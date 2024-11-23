@@ -2,7 +2,10 @@ package com.example.transactionservice.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
@@ -12,6 +15,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "top_up_requests")
 @Data
+@RequiredArgsConstructor
+@Builder(toBuilder = true)
+@AllArgsConstructor
 public class TopUpRequest {
 
     @Id
