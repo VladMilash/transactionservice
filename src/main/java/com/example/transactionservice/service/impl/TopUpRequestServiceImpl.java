@@ -10,6 +10,7 @@ import com.example.transactionservice.service.PaymentRequestService;
 import com.example.transactionservice.service.TopUpRequestService;
 import com.example.transactionservice.service.TransactionService;
 import com.example.transactionservice.service.WalletService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,19 @@ import java.math.BigDecimal;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class TopUpRequestServiceImpl implements TopUpRequestService {
     private final TopUpRequestRepository topUpRequestRepository;
     private final TransactionService transactionService;
     private final WalletService walletService;
     private final PaymentRequestService paymentRequestService;
+
+    public TopUpRequestServiceImpl(TopUpRequestRepository topUpRequestRepository, TransactionService transactionService,
+                                   WalletService walletService, @Lazy PaymentRequestService paymentRequestService) {
+        this.topUpRequestRepository = topUpRequestRepository;
+        this.transactionService = transactionService;
+        this.walletService = walletService;
+        this.paymentRequestService = paymentRequestService;
+    }
 
     @Override
     public TopUpRequest saveTopUpRequest(TopUpRequest topUpRequest) {
