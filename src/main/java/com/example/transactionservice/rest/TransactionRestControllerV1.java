@@ -1,10 +1,12 @@
 package com.example.transactionservice.rest;
 
+import com.example.transactionservice.dto.TopUpRequestDTO;
 import com.example.transactionservice.dto.TransactionRequestSearchDTO;
 import com.example.transactionservice.dto.TransactionResponseDTO;
 import com.example.transactionservice.dto.TransactionStatusResponseDTO;
 import com.example.transactionservice.entity.enums.State;
 import com.example.transactionservice.entity.enums.TransactionType;
+import com.example.transactionservice.service.PaymentRequestService;
 import com.example.transactionservice.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("api/v1/transactions")
 public class TransactionRestControllerV1 {
     private final TransactionService transactionService;
+    private final PaymentRequestService paymentRequestService;
 
     @GetMapping
     public Page<TransactionResponseDTO> getTransactionsByFilter(
@@ -38,6 +41,11 @@ public class TransactionRestControllerV1 {
     @GetMapping("/{uid}/status")
     public TransactionStatusResponseDTO getTransactionStatus(@RequestHeader("user_uid") UUID userUid, @PathVariable("uid") UUID uid) {
         return transactionService.getTransactionStatus(userUid, uid);
+    }
+
+    @GetMapping("/topUp")
+    public TransactionResponseDTO topUp(@RequestBody TopUpRequestDTO topUpRequestDTO) {
+        return paymentRequestService.startTopUpTransaction(topUpRequestDTO);
     }
 }
 
