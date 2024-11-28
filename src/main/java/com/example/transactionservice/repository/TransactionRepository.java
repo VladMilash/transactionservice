@@ -19,12 +19,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
         PagingAndSortingRepository<Transaction, UUID> {
 
     @Query("SELECT t FROM Transaction t WHERE " +
-            "(:userUid IS NULL OR t.userUid = :userUid) AND " +
-            "(:walletUid IS NULL OR t.wallet.uid = :walletUid) AND " +
-            "(:type IS NULL OR t.type = :type) AND " +
-            "(:state IS NULL OR t.state = :state) AND " +
-            "(:dateFrom IS NULL OR t.createdAt >= :dateFrom) AND " +
-            "(:dateTo IS NULL OR t.createdAt <= :dateTo)")
+            "(COALESCE(:userUid, t.userUid) = t.userUid) AND " +
+            "(COALESCE(:walletUid, t.wallet.uid) = t.wallet.uid) AND " +
+            "(COALESCE(:type, t.type) = t.type) AND " +
+            "(COALESCE(:state, t.state) = t.state) AND " +
+            "(COALESCE(:dateFrom, t.createdAt) <= t.createdAt) AND " +
+            "(COALESCE(:dateTo, t.createdAt) >= t.createdAt)")
     Optional<List<Transaction>> getTransactionsByFilters(@Param("userUid") UUID userUid,
                                                          @Param("walletUid") UUID walletUid,
                                                          @Param("type") TransactionType type,
@@ -33,12 +33,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
                                                          @Param("dateTo") LocalDateTime dateTo);
 
     @Query("SELECT t FROM Transaction t WHERE " +
-            "(:userUid IS NULL OR t.userUid = :userUid) AND " +
-            "(:walletUid IS NULL OR t.wallet.uid = :walletUid) AND " +
-            "(:type IS NULL OR t.type = :type) AND " +
-            "(:state IS NULL OR t.state = :state) AND " +
-            "(:dateFrom IS NULL OR t.createdAt >= :dateFrom) AND " +
-            "(:dateTo IS NULL OR t.createdAt <= :dateTo)")
+            "(COALESCE(:userUid, t.userUid) = t.userUid) AND " +
+            "(COALESCE(:walletUid, t.wallet.uid) = t.wallet.uid) AND " +
+            "(COALESCE(:type, t.type) = t.type) AND " +
+            "(COALESCE(:state, t.state) = t.state) AND " +
+            "(COALESCE(:dateFrom, t.createdAt) <= t.createdAt) AND " +
+            "(COALESCE(:dateTo, t.createdAt) >= t.createdAt)")
     Optional<Page<Transaction>> getTransactionsByFilters(@Param("userUid") UUID userUid,
                                                          @Param("walletUid") UUID walletUid,
                                                          @Param("type") TransactionType type,
@@ -46,6 +46,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
                                                          @Param("dateFrom") LocalDateTime dateFrom,
                                                          @Param("dateTo") LocalDateTime dateTo,
                                                          Pageable pageable);
+
 
     Optional<Transaction> findTransactionByUid(UUID uid);
 }
