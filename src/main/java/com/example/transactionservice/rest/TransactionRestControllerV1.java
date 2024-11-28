@@ -9,6 +9,7 @@ import com.example.transactionservice.entity.enums.TransactionType;
 import com.example.transactionservice.service.PaymentRequestService;
 import com.example.transactionservice.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/transactions")
@@ -40,6 +42,7 @@ public class TransactionRestControllerV1 {
 
     @GetMapping("/{uid}/status")
     public TransactionStatusResponseDTO getTransactionStatus(@RequestHeader("user_uid") UUID userUid, @PathVariable("uid") UUID uid) {
+        log.info("Started getting transaction status for user with uid: {} for transaction uid: {}", userUid, uid);
         return transactionService.getTransactionStatus(userUid, uid);
     }
 

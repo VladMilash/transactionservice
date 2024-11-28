@@ -49,11 +49,13 @@ public class Transaction {
     @Column(name = "amount")
     private BigDecimal amount = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = "type")
     private TransactionType type;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state;
 

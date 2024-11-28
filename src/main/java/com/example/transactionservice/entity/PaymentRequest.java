@@ -46,6 +46,7 @@ public class PaymentRequest {
     @Column(name = "amount")
     private BigDecimal amount = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private State status;
 

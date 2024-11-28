@@ -45,6 +45,7 @@ public class Wallet {
     @Column(name = "user_uid")
     private UUID userUid;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = "status")
     private WalletStatus status;
