@@ -1,6 +1,7 @@
 package com.example.transactionservice.entity;
 
 import com.example.transactionservice.entity.enums.WalletStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "wallets")

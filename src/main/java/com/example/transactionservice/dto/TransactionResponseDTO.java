@@ -18,7 +18,6 @@ public record TransactionResponseDTO(
         UUID id,
         LocalDateTime createdAt,
         UUID userUid,
-        Wallet wallet,
         String walletName,
         BigDecimal amount,
         TransactionType type,

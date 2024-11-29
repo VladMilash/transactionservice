@@ -84,9 +84,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        ShardContext.determineAndSetShard(transactionRequestSearchDTO.userUid());
+        ShardContext.setDefaultShard();
 
-        try {
             Page<Transaction> transactionsPage = transactionRepository.getTransactionsByFilters(
                     transactionRequestSearchDTO.userUid(),
                     transactionRequestSearchDTO.walletUid(),
@@ -100,9 +99,6 @@ public class TransactionServiceImpl implements TransactionService {
             });
             return transactionsPage.map(transactionMapper::map);
 
-        } finally {
-            ShardContext.clear();
-        }
     }
 
     @Override
