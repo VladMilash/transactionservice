@@ -13,7 +13,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record TransactionResponseDTO(
-        UUID id,
+        UUID uid,
         LocalDateTime createdAt,
         UUID userUid,
         String walletName,
@@ -21,3 +21,4 @@ public record TransactionResponseDTO(
         TransactionType type,
         State state) {
 }
+

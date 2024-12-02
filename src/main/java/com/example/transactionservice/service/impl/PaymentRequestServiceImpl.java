@@ -66,6 +66,8 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
                     .type(TransactionType.TOP_UP)
                     .build());
 
+            log.info("Uid Saved Transaction is: {}",  transaction.getUid());
+
             topUpRequestService.processingTopUpTransaction(paymentRequest, topUpRequest, transaction, walletForTopUp, topUpRequestDTO.amount());
 
             return transactionMapper.map(transaction);

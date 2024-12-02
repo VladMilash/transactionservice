@@ -40,7 +40,7 @@ public class TransactionRestControllerV1 {
         return transactionService.getTransactionsByFilters(transactionRequestSearchDTO, page, size);
     }
 
-    @GetMapping("/{uid}/status")
+    @GetMapping("/status/{uid}")
     public TransactionStatusResponseDTO getTransactionStatus(@RequestHeader("user_uid") UUID userUid, @PathVariable("uid") UUID uid) {
         log.info("Started getting transaction status for user with uid: {} for transaction uid: {}", userUid, uid);
         return transactionService.getTransactionStatus(userUid, uid);

@@ -107,19 +107,24 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionStatusResponseDTO getTransactionStatus(@NotNull UUID userUid, @NotNull UUID uid) {
         log.info("Started method: getTransactionStatus for user with uid: {} for transaction uid: {}", userUid, uid);
 
-        ShardContext.setDefaultShard();
-        return transactionRepository.findTransactionByUid(uid)
-                .map(transaction -> {
-                    log.info("Transactions with uid: {} successfully founded", uid);
-                    return new TransactionStatusResponseDTO(
-                            uid,
-                            transaction.getState(),
-                            transaction.getCreatedAt());
-                })
-                .orElseThrow(() -> {
-                    log.error("Transactions with uid: {} not found", uid);
-                    return new NotFoundEntityException("Transactions with uid: " + uid + " not found", "TRANSACTION_NOT_FOUND");
-                });
+        ShardContext.determineAndSetShard(userUid);
+
+       try {
+           return transactionRepository.findTransactionByUid(uid)
+                   .map(transaction -> {
+                       log.info("Transactions with uid: {} successfully founded", uid);
+                       return new TransactionStatusResponseDTO(
+                               uid,
+                               transaction.getState(),
+                               transaction.getCreatedAt());
+                   })
+                   .orElseThrow(() -> {
+                       log.error("Transactions with uid: {} not found", uid);
+                       return new NotFoundEntityException("Transactions with uid: " + uid + " not found", "TRANSACTION_NOT_FOUND");
+                   });
+       } finally {
+           ShardContext.clear();
+       }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
