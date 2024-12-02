@@ -14,13 +14,10 @@ import com.example.transactionservice.service.PaymentRequestService;
 import com.example.transactionservice.service.TransactionService;
 import com.example.transactionservice.service.WalletService;
 import com.example.transactionservice.sharding.ShardContext;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -35,50 +32,47 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 
     @Override
     public TransactionResponseDTO startTopUpTransaction(TopUpRequestDTO topUpRequestDTO) {
-        //шардирование
-        //поиск кошелька
-        //создание паймент запроса
-        //создание топ ап запроса
-        //создание транзакции (статус создан)
-        //возврат транзакции дто
+        log.info("Started operation for topUp with user_uid: {}, wallet_uid: {}, amount: {}",
+                topUpRequestDTO.userUid(), topUpRequestDTO.walletUid(), topUpRequestDTO.amount());
 
-        //должен продолжаться процесс пополнения кошелька
-        //обновление статуса транзакции - иy процесс
-        //валидация баланса кошелька
-        //пополнение кошелька
-        //обновление данных транзакций в бд
+        ShardContext.determineAndSetShard(topUpRequestDTO.userUid());
 
+        try {
+            Wallet walletForTopUp = walletService.getById(topUpRequestDTO.walletUid());
 
-        Wallet walletForTopUp = walletService.getById(topUpRequestDTO.walletUId());
+            PaymentRequest paymentRequest = paymentsRequestRepository.save(PaymentRequest.builder()
+                    .createdAt(LocalDateTime.now())
+                    .modifiedAt(LocalDateTime.now())
+                    .userUid(topUpRequestDTO.userUid())
+                    .wallet(walletForTopUp)
+                    .amount(topUpRequestDTO.amount())
+                    .status(State.CREATED)
+                    .build());
 
-        PaymentRequest paymentRequest = paymentsRequestRepository.save(PaymentRequest.builder()
-                .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .userUid(topUpRequestDTO.userUid())
-                .wallet(walletForTopUp)
-                .amount(topUpRequestDTO.amount())
-                .status(State.CREATED)
-                .build());
+            TopUpRequest topUpRequest = topUpRequestService.saveTopUpRequest(TopUpRequest.builder()
+                    .createdAt(LocalDateTime.now())
+                    .paymentRequest(paymentRequest)
+                    .provider("default")
+                    .build());
 
-        TopUpRequest topUpRequest = topUpRequestService.saveTopUpRequest(TopUpRequest.builder()
-                .createdAt(LocalDateTime.now())
-                .paymentRequest(paymentRequest)
-                .build());
+            Transaction transaction = transactionService.saveTransaction(Transaction.builder()
+                    .createdAt(LocalDateTime.now())
+                    .userUid(topUpRequestDTO.userUid())
+                    .wallet(walletForTopUp)
+                    .walletName(walletForTopUp.getName())
+                    .amount(topUpRequestDTO.amount())
+                    .state(State.CREATED)
+                    .paymentRequest(paymentRequest)
+                    .type(TransactionType.TOP_UP)
+                    .build());
 
-        Transaction transaction = transactionService.saveTransaction(Transaction.builder()
-                .createdAt(LocalDateTime.now())
-                .userUid(topUpRequestDTO.userUid())
-                .wallet(walletForTopUp)
-                .walletName(walletForTopUp.getName())
-                .amount(topUpRequestDTO.amount())
-                .state(State.CREATED)
-                .paymentRequest(paymentRequest)
-                .type(TransactionType.TOP_UP)
-                .build());
+            topUpRequestService.processingTopUpTransaction(paymentRequest, topUpRequest, transaction, walletForTopUp, topUpRequestDTO.amount());
 
-        topUpRequestService.processingTopUpTransaction(paymentRequest, topUpRequest, transaction, walletForTopUp, topUpRequestDTO.amount());
+            return transactionMapper.map(transaction);
 
-        return transactionMapper.map(transaction);
+        } finally {
+            ShardContext.clear();
+        }
     }
 
     @Override

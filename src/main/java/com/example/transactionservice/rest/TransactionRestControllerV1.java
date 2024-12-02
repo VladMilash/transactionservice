@@ -46,7 +46,7 @@ public class TransactionRestControllerV1 {
         return transactionService.getTransactionStatus(userUid, uid);
     }
 
-    @GetMapping("/topUp")
+    @PostMapping("/topUp")
     public TransactionResponseDTO topUp(@RequestBody TopUpRequestDTO topUpRequestDTO) {
         return paymentRequestService.startTopUpTransaction(topUpRequestDTO);
     }

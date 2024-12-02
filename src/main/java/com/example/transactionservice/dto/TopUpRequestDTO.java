@@ -11,6 +11,6 @@ import java.util.UUID;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record TopUpRequestDTO(
         UUID userUid,
-        UUID walletUId,
+        UUID walletUid,
         BigDecimal amount) {
 }

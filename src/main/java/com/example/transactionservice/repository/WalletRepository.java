@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface WalletRepository extends JpaRepository<Wallet, UUID> {
 
-    @Query(value = "SELECT wallet FROM wallets WHERE uid = :id",
+    @Query(value = "SELECT * FROM wallets WHERE uid = :id",
             nativeQuery = true)
     Optional<Wallet> findById(UUID id);
 

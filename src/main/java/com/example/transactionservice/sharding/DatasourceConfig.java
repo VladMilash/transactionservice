@@ -75,7 +75,7 @@ public class DatasourceConfig {
     }
 
     @Primary
-    @Bean(name = "transactionManage")
+    @Bean
     public DataSourceTransactionManager transactionManager(@Qualifier("myRoutingDatasource")DataSource routingDataSource) {
         return new DataSourceTransactionManager(routingDataSource);
     }
