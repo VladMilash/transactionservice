@@ -84,8 +84,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        ShardContext.setDefaultShard();
-
+        ShardContext.determineAndSetShard(transactionRequestSearchDTO.userUid());
+        try {
             Page<Transaction> transactionsPage = transactionRepository.getTransactionsByFilters(
                     transactionRequestSearchDTO.userUid(),
                     transactionRequestSearchDTO.walletUid(),
@@ -98,7 +98,9 @@ public class TransactionServiceImpl implements TransactionService {
                 return new NotFoundEntityException("Transactions not found for the given filters", "TRANSACTIONS_NOT_FOUND");
             });
             return transactionsPage.map(transactionMapper::map);
-
+        } finally {
+            ShardContext.clear();
+        }
     }
 
     @Override

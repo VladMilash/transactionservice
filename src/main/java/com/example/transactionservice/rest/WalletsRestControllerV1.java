@@ -25,6 +25,6 @@ public class WalletsRestControllerV1 {
     @GetMapping("/user/{user_uid}/currency/{currency}")
     public WalletResponseDTO getWalletByUserUidAndCurrencyCode(@PathVariable("user_uid") UUID userUid,
                                                                @PathVariable("currency") String currency) {
-        return walletService.findAllByUserUidAndCurrencyCode(userUid, currency);
+        return walletService.findAllByUserUidAndCurrencyCode(userUid, currency.toUpperCase());
     }
 }

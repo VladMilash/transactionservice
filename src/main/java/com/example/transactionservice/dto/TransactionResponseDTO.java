@@ -1,7 +1,5 @@
 package com.example.transactionservice.dto;
 
-import com.example.transactionservice.entity.PaymentRequest;
-import com.example.transactionservice.entity.Wallet;
 import com.example.transactionservice.entity.enums.State;
 import com.example.transactionservice.entity.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonInclude;
