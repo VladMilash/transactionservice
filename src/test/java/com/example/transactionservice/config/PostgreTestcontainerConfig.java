@@ -24,5 +24,4 @@ public class PostgreTestcontainerConfig {
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.flyway.locations", () -> "classpath:db/migration,classpath:db/test_migration");
     }
-
 }
